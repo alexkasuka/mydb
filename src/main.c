@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
             printf("Error: create database failed.");
             return -1;
         }
-        if (create_db_header(dbfd, &dbhdr) == STATUS_ERROR) {
+        if (create_db_header(&dbhdr) == STATUS_ERROR) {
             printf("Error: create database header failed.");
             return -1;
         }
