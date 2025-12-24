@@ -30,14 +30,16 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *
 	if (hours == NULL) return STATUS_ERROR;
 
 	dbhdr->count++;
+	struct employee_t *new_employees = realloc(*employees, dbhdr->count * sizeof(struct employee_t));
+	if (new_employees == NULL) return STATUS_ERROR;
+	*employees = new_employees;
 	struct employee_t *e = *employees;
-	*employees = realloc(*employees, dbhdr->count * sizeof(struct employee_t));
 
 	strncpy(e[dbhdr->count-1].name, name, sizeof(e[dbhdr->count-1].name)-1);
+	e[dbhdr->count-1].name[sizeof(e[dbhdr->count-1].name)-1] = '\0';
 	strncpy(e[dbhdr->count-1].address, address, sizeof(e[dbhdr->count-1].address)-1);
+	e[dbhdr->count-1].address[sizeof(e[dbhdr->count-1].address)-1] = '\0';
 	e[dbhdr->count-1].hours = atoi(hours);
-
-	*employees = e;
 
 	return STATUS_SUCCESS;
 }
