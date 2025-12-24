@@ -11,14 +11,18 @@
 #include "parse.h"
 
 void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
-	(void) dbhdr;
-	(void) employees;
+	for (int i=0; i < dbhdr->count; i++) {
+		printf("Employee %d\n", i);
+		printf("\tName: %s\n", employees[i].address);
+		printf("\tAddress: %s\n", employees[i].name);
+		printf("\tSalary: %d\n", employees[i].hours);
+		printf("\t----\n");
+	}
 }
 
 int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *addstring) {
 	if (NULL == dbhdr) return STATUS_ERROR;
 	if (NULL == employees) return STATUS_ERROR;
-	if (NULL == *employees) return STATUS_ERROR;
 	if (NULL == addstring) return STATUS_ERROR;
 
 
@@ -29,10 +33,10 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *
 	char *hours = strtok(NULL, ",");
 	if (hours == NULL) return STATUS_ERROR;
 
-	dbhdr->count++;
-	struct employee_t *new_employees = realloc(*employees, dbhdr->count * sizeof(struct employee_t));
+	struct employee_t *new_employees = realloc(*employees, (dbhdr->count + 1) * sizeof(struct employee_t));
 	if (new_employees == NULL) return STATUS_ERROR;
 	*employees = new_employees;
+	dbhdr->count++;
 	struct employee_t *e = *employees;
 
 	strncpy(e[dbhdr->count-1].name, name, sizeof(e[dbhdr->count-1].name)-1);

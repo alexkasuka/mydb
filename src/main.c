@@ -18,12 +18,13 @@ int main(int argc, char *argv[]) {
     char *addString = NULL;
     int c = 0;
     bool newFile = false;
+    bool list = false;
 
     int dbfd = -1;
     struct dbheader_t *dbhdr = NULL;
     struct employee_t *employees = NULL;
 
-    while ((c = getopt(argc, argv, "nf:a:")) != -1) {
+    while ((c = getopt(argc, argv, "nf:a:l")) != -1) {
         switch (c) {
             case 'f':
                 filepath = optarg;
@@ -33,6 +34,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'a':
                 addString = optarg;
+                break;
+            case 'l':
+                list = true;
                 break;
             case  '?':
                 printf("Error: unknown option.\n");
@@ -79,10 +83,11 @@ int main(int argc, char *argv[]) {
         add_employee(dbhdr, &employees, addString);
     }
 
-    output_file(dbfd, dbhdr, employees);
+    if (list) {
+        list_employees(dbhdr, employees);
+    }
 
-    printf("newfile: %s\n", newFile ? "true" : "false");
-    printf("filepath: %s\n", filepath);
+    output_file(dbfd, dbhdr, employees);
 
     return 0;
 }
