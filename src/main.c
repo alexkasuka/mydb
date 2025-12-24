@@ -76,10 +76,7 @@ int main(int argc, char *argv[]) {
 
 
     if (addString) {
-        dbhdr->count++;
-        dbhdr->filesize += sizeof(struct employee_t);
-        employees = realloc(employees, dbhdr->count * sizeof(struct employee_t));
-        add_employee(dbhdr, employees, addString);
+        add_employee(dbhdr, &employees, addString);
     }
 
     output_file(dbfd, dbhdr, employees);
