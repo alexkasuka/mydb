@@ -158,7 +158,7 @@ int create_db_header(struct dbheader_t **headerOut) {
 	return STATUS_SUCCESS;
 }
 
-int delete_user(struct dbheader_t *dbhdr, struct employee_t **employees, char *username) {
+int delete_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *username) {
 	if (NULL == dbhdr) return STATUS_ERROR;
 	if (NULL == employees) return STATUS_ERROR;
 	if (NULL == *employees) return STATUS_ERROR;
@@ -179,4 +179,30 @@ int delete_user(struct dbheader_t *dbhdr, struct employee_t **employees, char *u
 	}
 	printf("Error: User not found.\n");
 	return STATUS_ERROR;
+}
+
+int update_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *updstring) {
+	if (NULL == dbhdr) return STATUS_ERROR;
+	if (NULL == employees) return STATUS_ERROR;
+	if (NULL == *employees) return STATUS_ERROR;
+	if (NULL == updstring) return STATUS_ERROR;
+
+	char *name = strtok(updstring, ",");
+	if (name == NULL) return STATUS_ERROR;
+	char *address = strtok(NULL, ",");
+	if (address == NULL) return STATUS_ERROR;
+	char *hours = strtok(NULL, ",");
+	if (hours == NULL) return STATUS_ERROR;
+
+	struct employee_t *emp_ptr = *employees;
+	int count = dbhdr->count;
+	for (int i = 0; i < count; i++) {
+		if (strcmp(emp_ptr[i].name, name) == 0) {
+			strncpy(emp_ptr[i].address, address, sizeof(emp_ptr[i].address)-1);
+			emp_ptr[i].address[sizeof(emp_ptr[i].address)-1] = '\0';
+			emp_ptr[i].hours = atoi(hours);
+			printf("Success: user updated!.\n");
+		}
+	}
+	return STATUS_SUCCESS;
 }

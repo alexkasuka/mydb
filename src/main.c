@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
     char *filepath = NULL;
     char *addString = NULL;
     char *delString = NULL;
+    char *updString = NULL;
     int c = 0;
     bool newFile = false;
     bool list = false;
@@ -27,7 +28,7 @@ int main(int argc, char *argv[]) {
     struct dbheader_t *dbhdr = NULL;
     struct employee_t *employees = NULL;
 
-    while ((c = getopt(argc, argv, "nf:a:ld:")) != -1) {
+    while ((c = getopt(argc, argv, "nf:a:ld:u:")) != -1) {
         switch (c) {
             case 'f':
                 filepath = optarg;
@@ -43,6 +44,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'd':
                 delString = optarg;
+                break;
+            case 'u':
+                updString = optarg;
                 break;
             case  '?':
                 printf("Error: unknown option.\n");
@@ -94,7 +98,11 @@ int main(int argc, char *argv[]) {
     }
 
     if (delString) {
-        delete_user(dbhdr, &employees, delString);
+        delete_employee(dbhdr, &employees, delString);
+    }
+
+    if (updString) {
+        update_employee(dbhdr, &employees, updString);
     }
 
     output_file(dbfd, dbhdr, employees);
