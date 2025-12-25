@@ -87,6 +87,10 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 	dbhdr->filesize = htonl(sizeof(struct dbheader_t) + sizeof(struct employee_t) * realcount);
 
 	lseek(fd, 0, SEEK_SET);
+	if (ftruncate(fd, sizeof(struct dbheader_t) + sizeof(struct employee_t) * realcount) == -1) {
+		perror("ftruncate");
+		return STATUS_ERROR;
+	}
 	write(fd, dbhdr, sizeof(struct dbheader_t));
 
 	for (int i = 0; i < realcount; i++) {
@@ -152,4 +156,27 @@ int create_db_header(struct dbheader_t **headerOut) {
 	*headerOut = header;
 
 	return STATUS_SUCCESS;
+}
+
+int delete_user(struct dbheader_t *dbhdr, struct employee_t **employees, char *username) {
+	if (NULL == dbhdr) return STATUS_ERROR;
+	if (NULL == employees) return STATUS_ERROR;
+	if (NULL == *employees) return STATUS_ERROR;
+	if (NULL == username) return STATUS_ERROR;
+
+	int count = dbhdr->count;
+
+	struct employee_t *emp_ptr = *employees;
+	for (int i = 0; i < count; i++) {
+		if (strcmp(emp_ptr[i].name, username) == 0) {
+			for (int j = i; j < count - 1; j++) {
+				emp_ptr[j] = emp_ptr[j+1];
+			}
+			dbhdr->count--;
+			printf("Success: user deleted!.\n");
+			return STATUS_SUCCESS;
+		}
+	}
+	printf("Error: User not found.\n");
+	return STATUS_ERROR;
 }

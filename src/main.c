@@ -11,20 +11,23 @@ void print_usage(char *argv[]) {
     printf("Usage: %s -n -f <filepath>\n", argv[0]);
     printf("\t -n - create a new database file.\n");
     printf("\t -f - (required) database filepath.\n");
+
 }
 
 int main(int argc, char *argv[]) {
     char *filepath = NULL;
     char *addString = NULL;
+    char *delString = NULL;
     int c = 0;
     bool newFile = false;
     bool list = false;
+
 
     int dbfd = -1;
     struct dbheader_t *dbhdr = NULL;
     struct employee_t *employees = NULL;
 
-    while ((c = getopt(argc, argv, "nf:a:l")) != -1) {
+    while ((c = getopt(argc, argv, "nf:a:ld:")) != -1) {
         switch (c) {
             case 'f':
                 filepath = optarg;
@@ -37,6 +40,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'l':
                 list = true;
+                break;
+            case 'd':
+                delString = optarg;
                 break;
             case  '?':
                 printf("Error: unknown option.\n");
@@ -85,6 +91,10 @@ int main(int argc, char *argv[]) {
 
     if (list) {
         list_employees(dbhdr, employees);
+    }
+
+    if (delString) {
+        delete_user(dbhdr, &employees, delString);
     }
 
     output_file(dbfd, dbhdr, employees);
